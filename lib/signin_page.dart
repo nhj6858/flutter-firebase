@@ -164,6 +164,12 @@ class SignInPageState extends State<SignInPage> {
             ),
           ),
           Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+            child:  RaisedButton(color: Colors.indigo[300],child: Text('SIGN IN WITH GOOGLE ACCOUNT',style: TextStyle(color: Colors.white),)
+                ,onPressed: (){FocusScope.of(context).requestFocus(new FocusNode());
+            _signInWithGoogle();}),
+          ),
+          Container(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             padding: const EdgeInsets.only(top: 50),
             child: Row(
@@ -204,6 +210,21 @@ class SignInPageState extends State<SignInPage> {
     bool result = await fp.signInWithEmail(_mailCon.text, _pwCon.text);
     _scaffoldKey.currentState.hideCurrentSnackBar();
     if (result == false) showLastFBMessage();
+  }
+
+  void _signInWithGoogle() async{
+    _scaffoldKey.currentState
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(duration: Duration(seconds: 10),
+            content: Row(
+              children: <Widget>[
+                CircularProgressIndicator(),
+                Text('  Signing-In...')
+              ],
+            )));
+    bool result = await fp.signInWithGoogleAccount();
+    _scaffoldKey.currentState.hideCurrentSnackBar();
+    if(result == false) showLastFBMessage();
   }
 
   getRememberInfo() async {

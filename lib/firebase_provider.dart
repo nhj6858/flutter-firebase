@@ -1,11 +1,14 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 
 Logger logger = Logger();
 class FirebaseProvider with ChangeNotifier {
   final FirebaseAuth fAuth = FirebaseAuth.instance; // Firebase 인증 플러그인의 인스턴스
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   FirebaseUser _user; // Firebase에 로그인 된 사용자
 
   String _lastFirebaseResponse = ""; // Firebase로부터 받은 최신 메시지(에러 처리용)
@@ -63,6 +66,30 @@ class FirebaseProvider with ChangeNotifier {
       }
       return false;
     } on Exception catch (e) {
+      logger.e(e.toString());
+      List<String> result = e.toString().split(", ");
+      setLastFBMessage(result[1]);
+      return false;
+    }
+  }
+
+  Future<bool> signInWithGoogleAccount() async{
+    try{
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+          idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
+      final FirebaseUser user = (await fAuth.signInWithCredential(credential)).user;
+      assert(user.email != null);
+      assert(user.displayName != null);
+      assert(!user.isAnonymous);
+      assert(await user.getIdToken() != null);
+
+      final FirebaseUser currentUser = await fAuth.currentUser();
+      assert(user.uid == currentUser.uid);
+      setUser(user);
+      return true;
+    }on Exception catch (e) {
       logger.e(e.toString());
       List<String> result = e.toString().split(", ");
       setLastFBMessage(result[1]);

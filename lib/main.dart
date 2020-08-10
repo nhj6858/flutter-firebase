@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/CloudFunctionsHelloWorld.dart';
+import 'package:flutter_firebase/FcmFirstDemo.dart';
+import 'package:flutter_firebase/FirestoreFirstDemo.dart';
 import 'package:flutter_firebase/auth_page.dart';
 import 'package:flutter_firebase/firebase_provider.dart';
 import 'dart:convert';
@@ -34,6 +37,27 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AuthPage()));
+            },
+          ),
+          ListTile(
+            title: Text('FirebaseCloud'),
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CloudFunctionsHelloWorld()));
+            },
+          ),
+          ListTile(
+            title: Text('Firestore Cloud'),
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FirestoreFirstDemo()));
+            },
+          ),
+          ListTile(
+            title: Text('Firebase FCM'),
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FcmFirstDemo()));
             },
           )
         ].map((child) {
